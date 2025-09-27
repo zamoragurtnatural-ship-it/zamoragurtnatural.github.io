@@ -7,7 +7,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="img/icon/logo.ico">
+    
+    <link rel="icon" type="image/x-icon" href="img/icon/logo.ico"> 
+    
     <style>
         :root {
             --primary-color: #6a994e;
@@ -104,27 +106,53 @@
             color: var(--secondary-color);
         }
 
-        /* Botón del carrito */
+        /* 3. CAMBIO: Botón del carrito flotante (oculto por defecto) */
         .cart-button {
-            position: relative;
-            background: none;
-            border: none;
+            /* Posicionamiento Fijo y Flotante */
+            position: fixed;
+            bottom: 20px; 
+            right: 20px;  
+            z-index: 1000; 
+            
+            /* Estilo visual */
+            background-color: var(--primary-color);
             color: var(--light-text);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            font-size: 1.5rem;
-            margin-left: 2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-size: 1.8rem;
+            
+            /* Estado Inicial: Oculto y animado */
+            opacity: 0;
+            transform: scale(0.5);
+            pointer-events: none; /* Deshabilita clics cuando está oculto */
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
+        /* Clase para MOSTRAR el botón flotante */
+        .cart-button.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto; /* Habilita clics cuando está visible */
+        }
+        
         .cart-count {
             position: absolute;
-            top: -5px;
-            right: -10px;
+            top: -3px; 
+            right: -3px; 
             background-color: #ff5722; 
             color: white;
             border-radius: 50%;
-            padding: 2px 7px;
-            font-size: 0.8rem;
+            padding: 3px 6px;
+            font-size: 0.7rem;
             font-weight: bold;
+            line-height: 1;
         }
         
         /* Menú hamburguesa para móvil */
@@ -274,33 +302,48 @@
             right: 10px;
         }
 
-        /* Tarjeta de producto dentro del carrusel */
-        .producto-card {
-            min-width: 280px; /* Tamaño fijo para la tarjeta */
-            flex-shrink: 0;
-            background-color: #fff;
-            border-radius: 15px;
-            box-shadow: var(--shadow-light);
-            overflow: hidden;
-            text-align: center;
-            transition: transform 0.3s ease;
-            scroll-snap-align: center;
-        }
-
+       /* Tarjeta de producto dentro del carrusel */
+.producto-card {
+    min-width: 280px;
+    flex-shrink: 0;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: var(--shadow-light);
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.3s ease;
+    scroll-snap-align: center;
+    /* --- MODIFICACIONES CRÍTICAS --- */
+    display: flex; /* Habilita el modelo de caja flexible */
+    flex-direction: column; /* Apila los elementos verticalmente (imagen, info, botón) */
+    /* Nueva propiedad para asegurar que las tarjetas tengan una altura uniforme si es necesario */
+    height: 100%; /* Asegura que tomen la altura completa del track si se establece una altura fija allí (opcional, pero buena práctica) */
+}
         .producto-card:hover {
             transform: translateY(-10px);
         }
         
-        .producto-card img {
+        /* 2. CAMBIO: object-fit: contain para ver la imagen completa */
+         .producto-card img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            height: 250px;
+            /* CAMBIO: De 'cover' (recortar) a 'contain' (ajustar completamente) */
+            object-fit: contain; 
             cursor: pointer;
+            /* Se añade un fondo para ver el espacio restante si la imagen no llena el contenedor */
+            /*background-color: #f8f8f8; */
+            padding: 0px; /* Opcional: para darle un poco de espacio alrededor */
         }
         
+        
         .producto-info {
-            padding: 1.5rem;
-        }
+    padding: 1.5rem;
+    /* --- NUEVA REGLA CRÍTICA --- */
+    flex-grow: 1; /* Permite que este bloque crezca para llenar todo el espacio vertical disponible */
+    display: flex; /* Convierte .producto-info en contenedor flex */
+    flex-direction: column; /* Apila sus propios elementos (h3, p, button) verticalmente */
+    justify-content: space-between; /* Distribuye el espacio entre los elementos internos (opcional, pero recomendado) */
+}
         
         .producto-info h3 {
             margin-bottom: 0.5rem;
@@ -312,16 +355,17 @@
         }
 
         .add-to-cart {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 1rem;
-            transition: background-color 0.3s ease;
-        }
-
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease;
+    /* Se añade auto-margin superior si no se usa space-between en .producto-info */
+    /* margin-top: auto; */ 
+}
         .add-to-cart:hover {
             background-color: #55803a;
         }
@@ -379,7 +423,7 @@
         .modal-body img {
             width: 100%;
             max-height: 400px;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 10px;
         }
 
@@ -628,7 +672,7 @@
     <header class="header">
         <div class="container">
             <div class="brand-logo">
-                <img src="img/icon/logo.png" alt="Zamoragurt">
+                <img src="img/icon/logo.png" alt="Logo de Bienestar Natural">
                 <h1 class="logo">Zamoragurt</h1>
             </div>
             <nav class="nav">
@@ -636,12 +680,7 @@
                     <li><a href="#nosotros">Nosotros</a></li>
                     <li><a href="#productos">Productos</a></li>
                     <li><a href="#contacto">Contáctanos</a></li>
-                    <li>
-                        <button id="cart-button" class="cart-button">
-                            🛒<span id="cart-count" class="cart-count">0</span>
-                        </button>
-                    </li>
-                </ul>
+                    </ul>
             </nav>
             <div class="menu-toggle">
                 <span></span>
@@ -673,8 +712,6 @@
             </div>
         </section>
 
-        ---
-
         <section id="productos" class="section">
             <div class="container">
                 <h2>Nuestros Productos</h2>
@@ -684,13 +721,12 @@
                     <div class="carousel-track">
                         <div class="producto-card"
                              data-id="natural"
-                             data-name="Yogur Natural"
-                             data-price="13.50"                             
+                             data-name="Yogurt Natural"
+                             data-price="13.50" 
                              data-cantidad="1"
-                             data-description="Nuestro yogur natural es la base perfecta para una alimentación saludable. Elaborado con leche fresca y cultivos probióticos activos, ofrece una textura suave y un sabor ligeramente ácido. Ideal para combinar con frutas, miel, granola o para usar en tus recetas favoritas. 
-                             contenido: 900g"
+                             data-description="Nuestro yogurt natural es la base perfecta para una alimentación saludable. Elaborado con leche fresca y cultivos probióticos activos, ofrece una textura suave y un sabor ligeramente ácido. Ideal para combinar con frutas, miel, granola o para usar en tus recetas favoritas. Contenido: 900g"
                              data-image="img/natural.png">
-                            <img src="img/natural.png" alt="Yogur Natural">
+                            <img src="img/naturales.png" alt="Yogurt Natural">
                             <div class="producto-info">
                                 <h3>Yogur Natural</h3>
                                 <p>Cremoso y puro, perfecto para combinar.</p>
@@ -702,12 +738,12 @@
 
                         <div class="producto-card"
                              data-id="fresa"
-                             data-name="Yogur de Arandanos"
+                             data-name="Yogurt de Arandanos"
                              data-price="15.00"
                              data-cantidad="1"
-                             data-description="Una explosión de sabor con cada cucharada. Nuestro yogur de fresa está hecho con Arandanos frescos y maduros, cosechadas en su punto óptimo. Dulce, ligeramente ácido y con trozos de fruta real, es el postre o merienda ideal para toda la familia."
+                             data-description="Una explosión de sabor con cada cucharada. Nuestro yogurt de fresa está hecho con Arandanos frescos y maduros, cosechadas en su punto óptimo. Dulce, ligeramente ácido y con trozos de fruta real, es el postre o merienda ideal para toda la familia."
                              data-image="img/arandano.jpeg">
-                            <img src="img/arandano.jpeg" alt="Yogur de Arandanos">
+                            <img src="img/arandanos.png" alt="Yogurt de Arandanos">
                             <div class="producto-info">
                                 <h3>Yogur de Arandanos</h3>
                                 <p>Endulzado naturalmente con Arandanos.</p>
@@ -718,13 +754,13 @@
                         </div>
 
                         <div class="producto-card"
-                             data-id="durazno"
+                             data-id="Mix Frutos Secos"
                              data-name="Yogur de Mix Frutos Secos"
                              data-price="15.00"
                              data-cantidad="1"
-                             data-description="Disfruta del sabor unico del Mix Frutos Secos en nuestro cremoso yogur. Con trozos generosos de frutos secos seleccionados, este yogur es un verdadero placer tropical. Rico en vitaminas y con un toque de dulzura natural."
+                             data-description="Disfruta del sabor unico del Mix Frutos Secos en nuestro cremoso yogurt. Con trozos generosos de frutos secos seleccionados, este yogur es un verdadero placer tropical. Rico en vitaminas y con un toque de dulzura natural."
                              data-image="img/mix frutos secos.png">
-                            <img src="img/mix frutos secos.png" alt="Yogur de Durazno">
+                            <img src="img/frutos secos.png" alt="Yogur de Durazno">
                             <div class="producto-info">
                                 <h3>Yogur de Mix Frutos Secos</h3>
                                 <p>Elaborado con trozos de Mix Frutos Secos.</p>
@@ -735,34 +771,33 @@
                         </div>
 
                         <div class="producto-card"
-                             data-id="griego"
-                             data-name="Yogur Maracumango"
-                             data-price="15.50"
+                             data-id="Mango"
+                             data-name="Yogur de Mango"
+                             data-price="15.00"
                              data-cantidad="1"
-                             data-description="Nuestro yogur de Maracumango es espeso, cremoso y excepcionalmente rico en proteínas. Fermentado lentamente para obtener su textura característica, es perfecto para aquellos que buscan un impulso de energía. Disponible en versión natural o con un toque de miel pura."
-                             data-image="maracumango.png">
-                            <img src="maracumango.png" alt="Yogur Maracumango">
+                             data-description="Disfruta del sabor unico del Mnango en nuestro cremoso yogurt. Con trozos generosos de fruta seleccionados, este yogurt es un verdadero placer tropical. Rico en vitaminas y con un toque de dulzura natural."
+                             data-image="img/mango.png">
+                            <img src="img/mangos.png" alt="Yogurt de Mango">
                             <div class="producto-info">
-                                <h3>Yogur Maracumango</h3>
-                                <p>Extra cremoso y rico en proteínas.</p>
+                                <h3>Yogurt de Mango</h3>
+                                <p>Elaborado con trozos de Mix Frutos Secos.</p>
                                 <p>Contenido Neto: 900g.</p>
-                                <p class="price">S/15.50</p>
+                                <p class="price">S/15.00</p>
                                 <button class="add-to-cart">Añadir al carrito</button>
                             </div>
                         </div>
 
-                        <div class="producto-card"
-                             data-id="vainilla"
-                             data-name="Yogur de aguaymanto"
+                       <div class="producto-card"
+                             data-id="Café"
+                             data-name="Yogurt de Café"
                              data-price="15.00"
                              data-cantidad="1"
-                             data-description="Un clásico cremoso con el aroma y sabor inconfundible aguaymanto. Ideal para un desayuno rápido o como postre ligero. Perfecto para quienes prefieren los sabores suaves y reconfortantes."
-                             data-image="aguaymanto.png">
-                            <img src="aguaymanto.png"
-                            alt="Yogur de Aguaymanto">
+                             data-description="Disfruta del sabor unico del café Peruano en nuestro cremoso yogurt. Este yogurt es un verdadero placer tropical. Rico en vitaminas y con un toque de dulzura natural."
+                             data-image="img/cafe.png">
+                            <img src="img/cafes.png" alt="Yogur de Café">
                             <div class="producto-info">
-                                <h3>Yogur de Aguaymanto</h3>
-                                <p>El clásico sabor a Aguaymanto en un formato cremoso.</p>
+                                <h3>Yogurt de Café</h3>
+                                <p>Elaborado con café peruano.</p>
                                 <p>Contenido Neto: 900g.</p>
                                 <p class="price">S/15.00</p>
                                 <button class="add-to-cart">Añadir al carrito</button>
@@ -770,28 +805,75 @@
                         </div>
 
                         <div class="producto-card"
-                             data-id="mango"
-                             data-name="Yogur de Mango"
-                             data-price="14.50"
+                             data-id="Aguaymanto"
+                             data-name="Yogurt de Aguaymanto"
+                             data-price="15.00"
                              data-cantidad="1"
-                             data-description="Una deliciosa combinación tropical. Nuestro yogur de mango está elaborado con mangos maduros y jugosos, creando una textura suave y un sabor dulce y exótico. Una opción refrescante y llena de vitaminas para cualquier momento del día."
-                             data-image="mango.png">
-                            <img src="mango.png" alt="Yogur de Mango">
+                             data-description="Disfruta del sabor unico del Aguaymanto en nuestro cremoso yogurt. Con trozos generosos de fruta, este yogurt es un verdadero placer tropical. Rico en vitaminas y con un toque de dulzura natural."
+                             data-image="img/Aguaymanto.png">
+                            <img src="img/aguaymantos.png" alt="Yogur de Aguaymanto">
                             <div class="producto-info">
-                                <h3>Yogur de Mango</h3>
-                                <p>Sabor tropical y dulce con trozos de mango real.</p>
+                                <h3>Yogurt de Aguaymanto</h3>
+                                <p>Elaborado con Aguaymango.</p>
+                                <p>Contenido Neto: 900g.</p>
+                                <p class="price">S/15.00</p>
+                                <button class="add-to-cart">Añadir al carrito</button>
+                            </div>
+                        </div>                         
+                          <div class="producto-card"
+                             data-id="Guanabana"
+                             data-name="Yogur de Guanabana"
+                             data-price="15.00"
+                             data-cantidad="1"
+                             data-description="Disfruta del sabor unico de la Guanabana en nuestro cremoso yogurt. Con trozos generosos de fruta, este yogurt es un verdadero placer tropical. Rico en vitaminas y con un toque de dulzura natural."
+                             data-image="img/guanabana.png">
+                            <img src="img/guanabanas.png" alt="Yogur de Durazno">
+                            <div class="producto-info">
+                                <h3>Yogur de Guanabana</h3>
+                                <p>Elaborado con trozos de Guanabana.</p>
+                                <p>Contenido Neto: 900g.</p>
+                                <p class="price">S/15.00</p>
+                                <button class="add-to-cart">Añadir al carrito</button>
+                            </div>
+                        </div> 
+                         <div class="producto-card"
+                             data-id="Fresa"
+                             data-name="Yogurt de Fresa"
+                             data-price="14.50" 
+                             data-cantidad="1"
+                             data-description="Disfruta del sabor unico de la Fresa en nuestro cremoso yogurt. Con trozos generosos de fruta, este yogurt es un verdadero placer tropical. Rico en vitaminas y con un toque de dulzura natural."
+                             data-image="img/fresa.png">
+                            <img src="img/fresas.png" alt="Yogur de Fresa">
+                            <div class="producto-info">
+                                <h3>Yogur de Fresa</h3>
+                                <p>Cremoso y puro, perfecto para combinar.</p>
                                 <p>Contenido Neto: 900g.</p>
                                 <p class="price">S/14.50</p>
                                 <button class="add-to-cart">Añadir al carrito</button>
                             </div>
                         </div>
+
+                        <div class="producto-card"
+                             data-id="Linaza Mix"
+                             data-name="Yogurt Linaza Mix"
+                             data-price="14.50"
+                             data-cantidad="1"
+                             data-description="Disfruta del sabor unico de la Linaza Mix en nuestro cremoso yogurt. este yogurt es un verdadero placer. Rico en vitaminas y con un toque de dulzura natural."
+                             data-image="img/linaza mix.jpeg">
+                            <img src="img/linazas.png" alt="Yogur de Arandanos">
+                            <div class="producto-info">
+                                <h3>Yogurt Linaza Mix</h3>
+                                <p>Endulzado naturalmente.</p>
+                                <p>Contenido Neto: 900g.</p>
+                                <p class="price">S/14.50</p>
+                                <button class="add-to-cart">Añadir al carrito</button>
+                            </div>
+                        </div>                    
                     </div>
                     <button class="carousel-button right">&gt;</button>
                 </div>
             </div>
         </section>
-
-        ---
 
         <section id="contacto" class="section">
             <div class="container">
@@ -819,6 +901,10 @@
         </div>
     </footer>
 
+    <button id="cart-button" class="cart-button">
+        🛒<span id="cart-count" class="cart-count">0</span>
+    </button>
+    
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close-button" data-modal="productModal">&times;</span>
@@ -838,7 +924,7 @@
             <span class="close-button" data-modal="cartModal">&times;</span>
             <h2>Mi Carrito</h2>
             <ul id="cart-items">
-                </ul>
+            </ul>
             <div class="cart-total">
                 <span>Total:</span>
                 <span id="cart-total-price">S/0.00</span>
@@ -868,7 +954,7 @@
         const productCards = document.querySelectorAll('.producto-card');
         const productModal = document.getElementById('productModal');
         const cartModal = document.getElementById('cartModal');
-        const quantityModal = document.getElementById('quantityModal'); // Nuevo modal de cantidad
+        const quantityModal = document.getElementById('quantityModal'); 
         const quantityInput = document.getElementById('quantity-input');
         const confirmQuantityBtn = document.getElementById('confirm-quantity-btn');
         const cancelQuantityBtn = document.getElementById('cancel-quantity-btn');
@@ -893,7 +979,7 @@
 
         // Estado del carrito
         const cart = {};
-        let selectedProductData = null; // Variable para almacenar los datos del producto seleccionado
+        let selectedProductData = null; 
 
         // Variables para el efecto de la barra de menú
         let lastScrollY = window.scrollY;
@@ -912,9 +998,16 @@
             openQuantityModal();
         }
         
+        // 3. CAMBIO JS: Muestra/Oculta el botón flotante
         function updateCartCount() {
             const totalItems = Object.values(cart).reduce((total, item) => total + item.quantity, 0);
             cartCountSpan.textContent = totalItems;
+
+            if (totalItems > 0) {
+                cartButton.classList.add('active'); // Muestra el botón flotante
+            } else {
+                cartButton.classList.remove('active'); // Oculta el botón
+            }
         }
 
         function renderCart() {
@@ -942,215 +1035,156 @@
             }
 
             cartTotalPriceSpan.textContent = `S/${total.toFixed(2)}`;
+            updateCartCount();
+        }
 
-            document.querySelectorAll('.remove-one').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const id = e.target.dataset.id;
-                    if (cart[id].quantity > 1) {
-                        cart[id].quantity--;
-                    } else {
-                        delete cart[id];
-                    }
-                    updateCartCount();
-                    renderCart();
-                });
-            });
-
-            document.querySelectorAll('.remove-all').forEach(button => {
-                button.addEventListener('click', (e) => {
-                    const id = e.target.dataset.id;
+        function handleRemoveItem(id, removeAll = false) {
+            if (cart[id]) {
+                if (removeAll || cart[id].quantity <= 1) {
                     delete cart[id];
-                    updateCartCount();
-                    renderCart();
-                });
-            });
-        }
-
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function sendOrder() {
-            if (Object.keys(cart).length === 0) {
-                alert('Tu carrito está vacío. Añade productos para realizar un pedido.');
-                return;
+                } else {
+                    cart[id].quantity -= 1;
+                }
             }
+            renderCart();
+        }
 
-            let orderSummary = "¡Hola! Quisiera realizar el siguiente pedido:\n\n";
-            let total = 0;
+        // Funciones de Modal
+        function openModal(modal) {
+            modal.classList.add('active');
+        }
 
-            for (const id in cart) {
-                const item = cart[id];
-                const itemTotal = item.price * item.quantity;
-                orderSummary += `- ${item.name} (x${item.quantity}) - S/${itemTotal.toFixed(2)}\n`;
-                total += itemTotal;
-            }
-
-            orderSummary += `\nTotal: S/${total.toFixed(2)}`;
-
-            const encodedMessage = encodeURIComponent(orderSummary);
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
+        function closeModal(modal) {
+            modal.classList.remove('active');
         }
 
         function openProductModal(card) {
-            const name = card.dataset.name;
-            const description = card.dataset.description;
-            const price = parseFloat(card.dataset.price).toFixed(2);
-            const image = card.dataset.image;
-
-            modalProductImage.src = image;
-            modalProductImage.alt = name;
-            modalProductName.textContent = name;
-            modalProductDescription.textContent = description;
-            modalProductPrice.textContent = `S/${price}`;
-
-            openModal('productModal');
+            modalProductImage.src = card.dataset.image;
+            modalProductName.textContent = card.dataset.name;
+            modalProductDescription.textContent = card.dataset.description;
+            modalProductPrice.textContent = `S/${parseFloat(card.dataset.price).toFixed(2)}`;
+            openModal(productModal);
         }
-        
-        // NUEVA FUNCIÓN para abrir el modal de cantidad
+
         function openQuantityModal() {
-            document.getElementById('quantity-modal-title').textContent = `Cantidad de ${selectedProductData.name}`;
             quantityInput.value = 1;
-            openModal('quantityModal');
-            quantityInput.focus();
+            document.getElementById('quantity-modal-title').textContent = `¿Cuántos ${selectedProductData.name}?`;
+            openModal(quantityModal);
+        }
+
+        function finalizeAddToCart() {
+            const quantity = parseInt(quantityInput.value);
+            if (quantity > 0 && selectedProductData) {
+                const id = selectedProductData.id;
+                if (cart[id]) {
+                    cart[id].quantity += quantity;
+                } else {
+                    cart[id] = { ...selectedProductData, quantity: quantity };
+                }
+                renderCart();
+            }
+            closeModal(quantityModal);
         }
         
-        // NUEVA LÓGICA para confirmar la cantidad
-        confirmQuantityBtn.addEventListener('click', () => {
-            const quantity = parseInt(quantityInput.value);
-            if (isNaN(quantity) || quantity <= 0) {
-                alert('Por favor, ingresa una cantidad válida.');
-                return;
-            }
-            
-            const { id, name, price } = selectedProductData;
+        // Event Listeners
 
-            if (cart[id]) {
-                cart[id].quantity += quantity;
-            } else {
-                cart[id] = { name, price, quantity: quantity };
+        // Cierra los modales
+        closeButtons.forEach(button => {
+            button.onclick = function() {
+                const modalId = button.dataset.modal;
+                closeModal(document.getElementById(modalId));
             }
-            
-            closeModal('quantityModal');
-            updateCartCount();
-            renderCart();
-            alert(`${quantity} ${name} añadido(s) al carrito.`);
         });
         
-        // NUEVA LÓGICA para cancelar la cantidad
-        cancelQuantityBtn.addEventListener('click', () => {
-            closeModal('quantityModal');
+        window.onclick = function(event) {
+            if (event.target === productModal) {
+                closeModal(productModal);
+            } else if (event.target === cartModal) {
+                closeModal(cartModal);
+            } else if (event.target === quantityModal) {
+                closeModal(quantityModal);
+            }
+        }
+        
+        // Abre el modal del carrito
+        cartButton.addEventListener('click', () => {
+            renderCart(); // Asegura que el carrito se actualice antes de abrir
+            openModal(cartModal);
         });
 
-
-        // Eventos
-        menuToggle.addEventListener('click', () => {
-            nav.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.nav a').forEach(link => {
-            link.addEventListener('click', () => {
-                if (nav.classList.contains('active')) {
-                    nav.classList.remove('active');
-                }
-            });
-        });
-
-        document.querySelectorAll('.add-to-cart').forEach(button => {
-            button.addEventListener('click', addToCart);
-        });
-
-        document.querySelectorAll('.producto-card img').forEach(img => {
-            img.addEventListener('click', (event) => {
-                const card = event.target.closest('.producto-card');
+        // Maneja clics en las tarjetas (Abrir detalles o añadir al carrito)
+        productCards.forEach(card => {
+            const image = card.querySelector('img');
+            const addButton = card.querySelector('.add-to-cart');
+            
+            // Abrir detalles al hacer clic en la imagen
+            image.addEventListener('click', () => {
                 openProductModal(card);
             });
+            
+            // Abrir modal de cantidad al hacer clic en el botón Añadir
+            addButton.addEventListener('click', addToCart);
         });
 
-        cartButton.addEventListener('click', () => {
-            renderCart();
-            openModal('cartModal');
-        });
+        // Botones del modal de cantidad
+        confirmQuantityBtn.addEventListener('click', finalizeAddToCart);
+        cancelQuantityBtn.addEventListener('click', () => closeModal(quantityModal));
 
-        checkoutButton.addEventListener('click', sendOrder);
-
-        closeButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                const modalId = e.target.dataset.modal;
-                closeModal(modalId);
-            });
-        });
-
-        window.addEventListener('click', (event) => {
-            if (event.target === productModal) {
-                closeModal('productModal');
-            }
-            if (event.target === cartModal) {
-                closeModal('cartModal');
-            }
-            if (event.target === quantityModal) {
-                closeModal('quantityModal');
+        // Botones de eliminar del carrito
+        cartItemsList.addEventListener('click', (event) => {
+            if (event.target.classList.contains('remove-one')) {
+                handleRemoveItem(event.target.dataset.id, false);
+            } else if (event.target.classList.contains('remove-all')) {
+                handleRemoveItem(event.target.dataset.id, true);
             }
         });
 
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                closeModal('productModal');
-                closeModal('cartModal');
-                closeModal('quantityModal');
-            }
-        });
+        // Botón de checkout (WhatsApp)
+        checkoutButton.addEventListener('click', () => {
+            let message = "¡Hola! Me gustaría hacer un pedido de Zamoragurt:\n\n";
+            let total = 0;
+            let isEmpty = true;
 
-        window.addEventListener('scroll', () => {
-            if (window.innerWidth <= 768 && nav.classList.contains('active')) {
+            for (const id in cart) {
+                isEmpty = false;
+                const item = cart[id];
+                const itemTotal = item.price * item.quantity;
+                message += `${item.quantity} x ${item.name} (S/${itemTotal.toFixed(2)})\n`;
+                total += itemTotal;
+            }
+
+            if (isEmpty) {
+                alert("Tu carrito está vacío. Agrega productos antes de realizar un pedido.");
                 return;
             }
-            if (window.scrollY > lastScrollY && window.scrollY > 50) {
+
+            message += `\nTotal: S/${total.toFixed(2)}\n\n`;
+            message += "¡Espero tu confirmación!";
+
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        });
+
+        // Menú Móvil
+        menuToggle.addEventListener('click', () => {
+            nav.classList.toggle('active');
+            menuToggle.classList.toggle('open');
+        });
+
+        // Efecto Header (Ocultar/Mostrar al hacer scroll)
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > lastScrollY && window.scrollY > 100) {
+                // Scroll hacia abajo
                 header.classList.add('hide');
             } else {
+                // Scroll hacia arriba
                 header.classList.remove('hide');
             }
             lastScrollY = window.scrollY;
         });
 
-        contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const name = document.getElementById('nombre').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('mensaje').value;
-
-            const whatsappMessage = `¡Hola! Soy ${name} y mi correo es ${email}.\n\nMe gustaría contactarlos con el siguiente mensaje:\n\n${message}`;
-            const encodedMessage = encodeURIComponent(whatsappMessage);
-
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
-        });
-
-        // Lógica del carrusel
-        carouselButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const cardWidth = carouselTrack.querySelector('.producto-card').offsetWidth;
-                const direction = button.classList.contains('left') ? -1 : 1;
-                carouselTrack.scrollBy({
-                    left: direction * (cardWidth + 32), // 32px es el gap
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Para evitar que se oculte el menú al hacer scroll dentro del carrusel
-        carouselTrack.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
-        carouselTrack.addEventListener('touchmove', (e) => e.stopPropagation(), { passive: true });
+        // Inicializar el carrito
+        updateCartCount(); 
     </script>
 </body>
 </html>
