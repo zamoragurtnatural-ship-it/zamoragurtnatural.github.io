@@ -304,18 +304,18 @@
 
        /* Tarjeta de producto dentro del carrusel */
        .producto-card {
-           min-width: 280px;
-           flex-shrink: 0;
-           background-color: #fff;
-           border-radius: 15px;
-           box-shadow: var(--shadow-light);
-           overflow: hidden;
-           text-align: center;
-           transition: transform 0.3s ease;
-           scroll-snap-align: center;
-           display: flex; 
-           flex-direction: column; 
-           height: 100%; /* Asegura que tomen la altura completa disponible */
+            min-width: 280px;
+            flex-shrink: 0;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s ease;
+            scroll-snap-align: center;
+            display: flex; 
+            flex-direction: column; 
+            height: 100%; /* Asegura que tomen la altura completa disponible */
 }
 
         .producto-card:hover {
@@ -331,8 +331,8 @@
             cursor: pointer;
             padding: 0px;
 
-         }    
-         .producto-info {
+          }     
+          .producto-info {
             padding: 1.5rem;
             flex-grow: 1; /* Se estira para ocupar el espacio libre */
             display: flex;
@@ -773,7 +773,7 @@
                             <img src="img/mangos.png" alt="Yogurt de Mango">
                             <div class="producto-info">
                                 <h3>Yogurt de Mango</h3>
-                                <p>Elaborado con trozos de Mangos.</p>
+                                <p>Elaborado con trozos de Mix Frutos Secos.</p>
                                 <p>Contenido Neto: 900g.</p>
                                 <p class="price">S/15.00</p>
                                 <button class="add-to-cart">Añadir al carrito</button>
@@ -812,8 +812,8 @@
                                 <p class="price">S/15.00</p>
                                 <button class="add-to-cart">Añadir al carrito</button>
                             </div>
-                        </div>                         
-                          <div class="producto-card"
+                        </div>              
+                         <div class="producto-card"
                              data-id="Guanabana"
                              data-name="Yogur de Guanabana"
                              data-price="15.00"
@@ -828,7 +828,7 @@
                                 <p class="price">S/15.00</p>
                                 <button class="add-to-cart">Añadir al carrito</button>
                             </div>
-                        </div> 
+                        </div>  
                          <div class="producto-card"
                              data-id="Fresa"
                              data-name="Yogurt de Fresa"
@@ -861,7 +861,7 @@
                                 <p class="price">S/14.50</p>
                                 <button class="add-to-cart">Añadir al carrito</button>
                             </div>
-                        </div>                    
+                        </div>              
                     </div>
                     <button class="carousel-button right">&gt;</button>
                 </div>
@@ -882,7 +882,7 @@
                     <label for="mensaje">Mensaje</label>
                     <textarea id="mensaje" name="mensaje" rows="6" required></textarea>
 
-                    <button type="submit">Enviar Mensaje</button>
+                    <button type="submit">Enviar Mensaje (Abrir WhatsApp)</button>
                 </form>
             </div>
         </section>
@@ -922,277 +922,340 @@
                 <span>Total:</span>
                 <span id="cart-total-price">S/0.00</span>
             </div>
-            <button id="checkout-button" class="checkout-button">
-                Realizar Pedido por WhatsApp
-            </button>
+            <button id="checkout-button" class="checkout-button">Finalizar Pedido por WhatsApp</button>
         </div>
     </div>
     
     <div id="quantityModal" class="modal">
         <div class="modal-content">
             <span class="close-button" data-modal="quantityModal">&times;</span>
-            <h3 id="quantity-modal-title">Elige la cantidad</h3>
+            <h3>Selecciona la Cantidad</h3>
             <input type="number" id="quantity-input" value="1" min="1">
             <div class="quantity-buttons">
-                <button id="confirm-quantity-btn">Aceptar</button>
+                <button id="confirm-quantity-btn">Confirmar</button>
                 <button id="cancel-quantity-btn">Cancelar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Declaraciones de elementos
-        const menuToggle = document.querySelector('.menu-toggle');
-        const nav = document.querySelector('.nav');
-        const productCards = document.querySelectorAll('.producto-card');
-        const productModal = document.getElementById('productModal');
-        const cartModal = document.getElementById('cartModal');
-        const quantityModal = document.getElementById('quantityModal'); 
-        const quantityInput = document.getElementById('quantity-input');
-        const confirmQuantityBtn = document.getElementById('confirm-quantity-btn');
-        const cancelQuantityBtn = document.getElementById('cancel-quantity-btn');
-        const closeButtons = document.querySelectorAll('.close-button');
-        const cartButton = document.getElementById('cart-button');
-        const cartCountSpan = document.getElementById('cart-count');
-        const cartItemsList = document.getElementById('cart-items');
-        const cartTotalPriceSpan = document.getElementById('cart-total-price');
-        const checkoutButton = document.getElementById('checkout-button');
-        const contactForm = document.getElementById('contactForm');
-        const header = document.querySelector('.header');
+        // ⚠️ IMPORTANTE: REEMPLAZA '51999888777' con tu número real (código de país + número, sin el signo +)
+        const WHATSAPP_NUMBER = '51982142561'; 
 
-        // Modal de Producto - elementos
-        const modalProductImage = document.getElementById('modalProductImage');
-        const modalProductName = document.getElementById('modalProductName');
-        const modalProductDescription = document.getElementById('modalProductDescription');
-        const modalProductPrice = document.getElementById('modalProductPrice');
+        let cart = []; 
+        let selectedProduct = null; 
 
-        // Selecciona el contenedor del carrusel y los botones
-        const carouselTrack = document.querySelector('.carousel-track');
-        const leftButton = document.querySelector('.carousel-button.left');
-        const rightButton = document.querySelector('.carousel-button.right');
-        const products = document.querySelectorAll('.producto-card');
+        // --- FUNCIONES DE UTILIDAD (NO MODIFICADAS) ---
 
-        // Calcula el ancho de cada tarjeta más el espacio (gap)
-        const productWidth = products.length > 0 ? products[0].offsetWidth + 32 : 0; 
-        // Agrega la funcionalidad al botón de la derecha
-        rightButton.addEventListener('click', () => {
-            carouselTrack.scrollLeft += productWidth;
-        });
-
-        // Agrega la funcionalidad al botón de la izquierda
-        leftButton.addEventListener('click', () => {
-            carouselTrack.scrollLeft -= productWidth;
-        });
-
-
-        // Estado del carrito
-        const cart = {};
-        let selectedProductData = null; 
-
-        // Variables para el efecto de la barra de menú
-        let lastScrollY = window.scrollY;
-
-        // Número de teléfono de la empresa (ASEGÚRATE DE CAMBIAR ESTO)
-        const phoneNumber = '51982142561';
-
-        // Funciones del Carrito
-        function addToCart(event) {
-            const card = event.target.closest('[data-id]');
-            selectedProductData = {
-                id: card.dataset.id,
-                name: card.dataset.name,
-                price: parseFloat(card.dataset.price)
+        function getProductData(element) {
+            return {
+                id: element.dataset.id,
+                name: element.dataset.name,
+                price: parseFloat(element.dataset.price),
+                description: element.dataset.description,
+                image: element.dataset.image
             };
-            openQuantityModal();
+        }
+
+        function saveCart() {
+            localStorage.setItem('zamoragurtCart', JSON.stringify(cart));
+        }
+
+        function loadCart() {
+            const savedCart = localStorage.getItem('zamoragurtCart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartCount();
+                renderCart();
+            }
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = count;
+            const cartButton = document.getElementById('cart-button');
+            if (count > 0) {
+                cartButton.classList.add('active');
+            } else {
+                cartButton.classList.remove('active');
+            }
+        }
+
+        function calculateTotal() {
+            return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        function closeModal(modalElement) {
+            modalElement.classList.remove('active');
+            // Quita la clase 'active' de .modal para iniciar la transición de opacidad/transform
+            setTimeout(() => {
+                modalElement.style.display = 'none';
+            }, 300); // 300ms para coincidir con la duración de la transición CSS
         }
         
-        // 3. CAMBIO JS: Muestra/Oculta el botón flotante
-        function updateCartCount() {
-            const totalItems = Object.values(cart).reduce((total, item) => total + item.quantity, 0);
-            cartCountSpan.textContent = totalItems;
-
-            if (totalItems > 0) {
-                cartButton.classList.add('active'); // Muestra el botón flotante
-            } else {
-                cartButton.classList.remove('active'); // Oculta el botón
-            }
+        // Función para mostrar el modal de detalles
+        function showProductModal(product) {
+            const modal = document.getElementById('productModal');
+            document.getElementById('modalProductName').textContent = product.name;
+            document.getElementById('modalProductDescription').textContent = product.description;
+            document.getElementById('modalProductPrice').textContent = `S/${product.price.toFixed(2)}`;
+            document.getElementById('modalProductImage').src = product.image;
+            
+            modal.style.display = 'flex';
+            // Usa setTimeout para asegurar que 'display: flex' se aplique antes de añadir 'active'
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
         }
 
-        function renderCart() {
-            cartItemsList.innerHTML = '';
-            let total = 0;
 
-            for (const id in cart) {
-                const item = cart[id];
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
+        // --- FUNCIONES DEL CARRITO ---
 
-                const li = document.createElement('li');
-                li.classList.add('cart-item');
-                li.innerHTML = `
-                    <div class="cart-item-info">
-                        <span class="cart-item-name">${item.name} (x${item.quantity})</span>
-                        <span class="cart-item-price">S/${itemTotal.toFixed(2)}</span>
-                    </div>
-                    <div class="item-actions">
-                        <button class="remove-one" data-id="${id}">-</button>
-                        <button class="remove-all" data-id="${id}">Eliminar</button>
-                    </div>
-                `;
-                cartItemsList.appendChild(li);
+        function addToCart(product, quantity) {
+            const existingItem = cart.find(item => item.id === product.id);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ ...product, quantity: quantity });
             }
-
-            cartTotalPriceSpan.textContent = `S/${total.toFixed(2)}`;
+            saveCart();
             updateCartCount();
         }
 
-        function handleRemoveItem(id, removeAll = false) {
-            if (cart[id]) {
-                if (removeAll || cart[id].quantity <= 1) {
-                    delete cart[id];
-                } else {
-                    cart[id].quantity -= 1;
-                }
-            }
-            renderCart();
-        }
-
-        // Funciones de Modal
-        function openModal(modal) {
-            modal.classList.add('active');
-        }
-
-        function closeModal(modal) {
-            modal.classList.remove('active');
-        }
-
-        function openProductModal(card) {
-            modalProductImage.src = card.dataset.image;
-            modalProductName.textContent = card.dataset.name;
-            modalProductDescription.textContent = card.dataset.description;
-            modalProductPrice.textContent = `S/${parseFloat(card.dataset.price).toFixed(2)}`;
-            openModal(productModal);
-        }
-
-        function openQuantityModal() {
-            quantityInput.value = 1;
-            document.getElementById('quantity-modal-title').textContent = `¿Cuántos ${selectedProductData.name}?`;
-            openModal(quantityModal);
-        }
-
-        function finalizeAddToCart() {
-            const quantity = parseInt(quantityInput.value);
-            if (quantity > 0 && selectedProductData) {
-                const id = selectedProductData.id;
-                if (cart[id]) {
-                    cart[id].quantity += quantity;
-                } else {
-                    cart[id] = { ...selectedProductData, quantity: quantity };
-                }
+        function updateCartItemQuantity(productId, newQuantity) {
+            const item = cart.find(i => i.id === productId);
+            if (item) {
+                item.quantity = Math.max(1, newQuantity);
+                saveCart();
                 renderCart();
             }
-            closeModal(quantityModal);
         }
-        
-        // Event Listeners
 
-        // Cierra los modales
-        closeButtons.forEach(button => {
-            button.onclick = function() {
-                const modalId = button.dataset.modal;
-                closeModal(document.getElementById(modalId));
-            }
-        });
-        
-        window.onclick = function(event) {
-            if (event.target === productModal) {
-                closeModal(productModal);
-            } else if (event.target === cartModal) {
-                closeModal(cartModal);
-            } else if (event.target === quantityModal) {
-                closeModal(quantityModal);
-            }
+        function removeCartItem(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+            renderCart();
+            updateCartCount();
         }
-        
-        // Abre el modal del carrito
-        cartButton.addEventListener('click', () => {
-            renderCart(); // Asegura que el carrito se actualice antes de abrir
-            openModal(cartModal);
-        });
 
-        // Maneja clics en las tarjetas (Abrir detalles o añadir al carrito)
-        productCards.forEach(card => {
-            const image = card.querySelector('img');
-            const addButton = card.querySelector('.add-to-cart');
-            
-            // Abrir detalles al hacer clic en la imagen
-            image.addEventListener('click', () => {
-                openProductModal(card);
-            });
-            
-            // Abrir modal de cantidad al hacer clic en el botón Añadir
-            addButton.addEventListener('click', addToCart);
-        });
-
-        // Botones del modal de cantidad
-        confirmQuantityBtn.addEventListener('click', finalizeAddToCart);
-        cancelQuantityBtn.addEventListener('click', () => closeModal(quantityModal));
-
-        // Botones de eliminar del carrito
-        cartItemsList.addEventListener('click', (event) => {
-            if (event.target.classList.contains('remove-one')) {
-                handleRemoveItem(event.target.dataset.id, false);
-            } else if (event.target.classList.contains('remove-all')) {
-                handleRemoveItem(event.target.dataset.id, true);
-            }
-        });
-
-        // Botón de checkout (WhatsApp)
-        checkoutButton.addEventListener('click', () => {
-            let message = "¡Hola! Me gustaría hacer un pedido de Zamoragurt:\n\n";
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = '';
             let total = 0;
-            let isEmpty = true;
 
-            for (const id in cart) {
-                isEmpty = false;
-                const item = cart[id];
-                const itemTotal = item.price * item.quantity;
-                message += `${item.quantity} x ${item.name} (S/${itemTotal.toFixed(2)})\n`;
-                total += itemTotal;
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="text-align: center; color: #777;">El carrito está vacío.</p>';
+                document.getElementById('checkout-button').disabled = true;
+            } else {
+                document.getElementById('checkout-button').disabled = false;
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+
+                    const li = document.createElement('li');
+                    li.classList.add('cart-item');
+                    li.innerHTML = `
+                        <div class="cart-item-info">
+                            <span class="cart-item-name">${item.name}</span>
+                            <span class="cart-item-price">S/${itemTotal.toFixed(2)}</span>
+                        </div>
+                        <div class="item-actions">
+                            <button onclick="updateCartItemQuantity('${item.id}', ${item.quantity - 1})" ${item.quantity <= 1 ? 'disabled' : ''}>-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="updateCartItemQuantity('${item.id}', ${item.quantity + 1})">+</button>
+                            <button onclick="removeCartItem('${item.id}')" style="background-color: #f44336; color: white;">&times;</button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(li);
+                });
             }
 
-            if (isEmpty) {
-                alert("Tu carrito está vacío. Agrega productos antes de realizar un pedido.");
+            document.getElementById('cart-total-price').textContent = `S/${total.toFixed(2)}`;
+        }
+
+        function openCartModal() {
+            renderCart();
+            const modal = document.getElementById('cartModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+        
+        // Función para mostrar el modal de cantidad antes de añadir al carrito
+        function showQuantityModal(productData) {
+            selectedProduct = productData;
+            const modal = document.getElementById('quantityModal');
+            document.getElementById('quantity-input').value = 1; // Resetear a 1
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+
+        // --- CORRECCIÓN 1: CONTACTO POR WHATSAPP (AQUÍ ESTABA EL FALLO PRINCIPAL) ---
+        
+        document.getElementById('contactForm').addEventListener('submit', submitContactForm);
+
+        function submitContactForm(event) {
+            event.preventDefault(); // Detiene el envío HTTP
+
+            const name = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('mensaje').value;
+            
+            // 1. Construir el mensaje de WhatsApp
+            let whatsappMessage = `¡Hola Zamoragurt! Soy ${name} y me contacto a través de la web.\n`;
+            whatsappMessage += `Correo: ${email}\n\n`;
+            whatsappMessage += `Mensaje:\n${message}`;
+
+            // 2. Codificar el mensaje para la URL
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+
+            // 3. Crear el enlace de WhatsApp con el número y el mensaje
+            const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+            // 4. Abrir WhatsApp en una nueva pestaña
+            window.open(whatsappLink, '_blank');
+            
+            alert("¡Gracias por contactarnos! Serás redirigido a WhatsApp para enviar tu mensaje.");
+            document.getElementById('contactForm').reset(); // Limpiar el formulario
+        }
+
+        // --- CORRECCIÓN 2: CHECKOUT POR WHATSAPP (AQUÍ ESTABA EL FALLO PRINCIPAL) ---
+
+        document.getElementById('checkout-button').addEventListener('click', checkout);
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert('El carrito está vacío. Agrega productos antes de finalizar el pedido.');
                 return;
             }
 
-            message += `\nTotal: S/${total.toFixed(2)}\n\n`;
-            message += "¡Espero tu confirmación!";
+            const total = calculateTotal().toFixed(2);
+            let whatsappMessage = "¡Hola Zamoragurt! Este es mi pedido:\n\n*Productos:*\n";
 
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+            cart.forEach(item => {
+                const itemTotal = (item.price * item.quantity).toFixed(2);
+                // Ejemplo de línea: 2x Yogurt Natural (S/27.00)
+                whatsappMessage += `• ${item.quantity}x ${item.name} (S/${itemTotal})\n`;
+            });
+
+            whatsappMessage += `\n*Total a Pagar:* S/${total}\n`;
+            whatsappMessage += "\nPor favor, confírmenme la disponibilidad y los detalles de entrega. ¡Gracias!";
+
+            // Codificar el mensaje
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+
+            // Crear el enlace de WhatsApp
+            const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+            // Abrir WhatsApp
+            window.open(whatsappLink, '_blank');
+            
+            // Opcional: Limpiar el carrito después de enviar el pedido (descomenta si deseas que se vacíe)
+            // cart = [];
+            // saveCart();
+            // updateCartCount();
+            closeModal(document.getElementById('cartModal'));
+            alert("Serás redirigido a WhatsApp para confirmar tu pedido.");
+        }
+
+
+        // --- EVENT LISTENERS DE INICIALIZACIÓN ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCart(); // Cargar el carrito guardado
+
+            // Eventos de Navegación Móvil
+            const menuToggle = document.querySelector('.menu-toggle');
+            const nav = document.querySelector('.nav');
+            menuToggle.addEventListener('click', () => {
+                nav.classList.toggle('active');
+            });
+
+            // Eventos del Carrusel
+            const track = document.querySelector('.carousel-track');
+            const leftButton = document.querySelector('.carousel-button.left');
+            const rightButton = document.querySelector('.carousel-button.right');
+            
+            leftButton.addEventListener('click', () => {
+                track.scrollBy({ left: -320, behavior: 'smooth' }); // Ajuste de desplazamiento
+            });
+            rightButton.addEventListener('click', () => {
+                track.scrollBy({ left: 320, behavior: 'smooth' }); // Ajuste de desplazamiento
+            });
+
+
+            // Eventos para abrir el modal del producto y la cantidad
+            document.querySelectorAll('.producto-card').forEach(card => {
+                const productData = getProductData(card);
+
+                // Clic en la imagen para ver detalles
+                card.querySelector('img').addEventListener('click', () => {
+                    showProductModal(productData);
+                });
+
+                // Clic en el botón "Añadir al carrito" para abrir el modal de cantidad
+                card.querySelector('.add-to-cart').addEventListener('click', () => {
+                    showQuantityModal(productData);
+                });
+            });
+
+            // Eventos de los botones del modal de cantidad
+            document.getElementById('confirm-quantity-btn').addEventListener('click', () => {
+                const quantity = parseInt(document.getElementById('quantity-input').value);
+                if (quantity > 0 && selectedProduct) {
+                    addToCart(selectedProduct, quantity);
+                    closeModal(document.getElementById('quantityModal'));
+                } else {
+                    alert("La cantidad debe ser al menos 1.");
+                }
+            });
+
+            document.getElementById('cancel-quantity-btn').addEventListener('click', () => {
+                closeModal(document.getElementById('quantityModal'));
+            });
+
+            // Eventos para cerrar los modales
+            document.querySelectorAll('.close-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const modalId = e.target.dataset.modal;
+                    const modalElement = document.getElementById(modalId);
+                    closeModal(modalElement);
+                });
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target === document.getElementById('productModal')) {
+                    closeModal(document.getElementById('productModal'));
+                }
+                if (event.target === document.getElementById('cartModal')) {
+                    closeModal(document.getElementById('cartModal'));
+                }
+                if (event.target === document.getElementById('quantityModal')) {
+                    closeModal(document.getElementById('quantityModal'));
+                }
+            });
+
+            // Evento para abrir el modal del carrito flotante
+            document.getElementById('cart-button').addEventListener('click', openCartModal);
+
+            // Ocultar header al hacer scroll hacia abajo
+            let lastScrollTop = 0;
+            const header = document.querySelector('.header');
+            window.addEventListener('scroll', () => {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > 50) { // Scrolling down
+                    header.classList.add('hide');
+                } else { // Scrolling up
+                    header.classList.remove('hide');
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile
+            });
         });
-
-        // Menú Móvil
-        menuToggle.addEventListener('click', () => {
-            nav.classList.toggle('active');
-            menuToggle.classList.toggle('open');
-        });
-
-        // Efecto Header (Ocultar/Mostrar al hacer scroll)
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > lastScrollY && window.scrollY > 100) {
-                // Scroll hacia abajo
-                header.classList.add('hide');
-            } else {
-                // Scroll hacia arriba
-                header.classList.remove('hide');
-            }
-            lastScrollY = window.scrollY;
-        });
-
-        // Inicializar el carrito
-        updateCartCount(); 
     </script>
 </body>
 </html>
