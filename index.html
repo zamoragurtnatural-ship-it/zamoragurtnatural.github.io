@@ -303,46 +303,41 @@
         }
 
        /* Tarjeta de producto dentro del carrusel */
-.producto-card {
-    min-width: 280px;
-    flex-shrink: 0;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: var(--shadow-light);
-    overflow: hidden;
-    text-align: center;
-    transition: transform 0.3s ease;
-    scroll-snap-align: center;
-    /* --- MODIFICACIONES CRÍTICAS --- */
-    display: flex; /* Habilita el modelo de caja flexible */
-    flex-direction: column; /* Apila los elementos verticalmente (imagen, info, botón) */
-    /* Nueva propiedad para asegurar que las tarjetas tengan una altura uniforme si es necesario */
-    height: 100%; /* Asegura que tomen la altura completa del track si se establece una altura fija allí (opcional, pero buena práctica) */
+       .producto-card {
+           min-width: 280px;
+           flex-shrink: 0;
+           background-color: #fff;
+           border-radius: 15px;
+           box-shadow: var(--shadow-light);
+           overflow: hidden;
+           text-align: center;
+           transition: transform 0.3s ease;
+           scroll-snap-align: center;
+           display: flex; 
+           flex-direction: column; 
+           height: 100%; /* Asegura que tomen la altura completa disponible */
 }
+
         .producto-card:hover {
             transform: translateY(-10px);
         }
         
-        /* 2. CAMBIO: object-fit: contain para ver la imagen completa */
-         .producto-card img {
+    /* 2. CAMBIO: object-fit: contain para ver la imagen completa */
+        .producto-card img {
             width: 100%;
             height: 250px;
             /* CAMBIO: De 'cover' (recortar) a 'contain' (ajustar completamente) */
-            object-fit: contain; 
+            object-fit: contain;
             cursor: pointer;
-            /* Se añade un fondo para ver el espacio restante si la imagen no llena el contenedor */
-            /*background-color: #f8f8f8; */
-            padding: 0px; /* Opcional: para darle un poco de espacio alrededor */
-        }
-        
-        
-        .producto-info {
-    padding: 1.5rem;
-    /* --- NUEVA REGLA CRÍTICA --- */
-    flex-grow: 1; /* Permite que este bloque crezca para llenar todo el espacio vertical disponible */
-    display: flex; /* Convierte .producto-info en contenedor flex */
-    flex-direction: column; /* Apila sus propios elementos (h3, p, button) verticalmente */
-    justify-content: space-between; /* Distribuye el espacio entre los elementos internos (opcional, pero recomendado) */
+            padding: 0px;
+
+         }    
+         .producto-info {
+            padding: 1.5rem;
+            flex-grow: 1; /* Se estira para ocupar el espacio libre */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribuye el espacio entre los elementos internos */
 }
         
         .producto-info h3 {
@@ -354,17 +349,15 @@
             margin: 0;
         }
 
-        .add-to-cart {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 1rem;
-    transition: background-color 0.3s ease;
-    /* Se añade auto-margin superior si no se usa space-between en .producto-info */
-    /* margin-top: auto; */ 
+       .add-to-cart {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: background-color 0.3s ease;
 }
         .add-to-cart:hover {
             background-color: #55803a;
@@ -737,7 +730,7 @@
                         </div>
 
                         <div class="producto-card"
-                             data-id="fresa"
+                             data-id="Arandanos"
                              data-name="Yogurt de Arandanos"
                              data-price="15.00"
                              data-cantidad="1"
@@ -780,7 +773,7 @@
                             <img src="img/mangos.png" alt="Yogurt de Mango">
                             <div class="producto-info">
                                 <h3>Yogurt de Mango</h3>
-                                <p>Elaborado con trozos de Mix Frutos Secos.</p>
+                                <p>Elaborado con trozos de Mangos.</p>
                                 <p>Contenido Neto: 900g.</p>
                                 <p class="price">S/15.00</p>
                                 <button class="add-to-cart">Añadir al carrito</button>
@@ -973,9 +966,24 @@
         const modalProductDescription = document.getElementById('modalProductDescription');
         const modalProductPrice = document.getElementById('modalProductPrice');
 
-        // Elementos del carrusel
+        // Selecciona el contenedor del carrusel y los botones
         const carouselTrack = document.querySelector('.carousel-track');
-        const carouselButtons = document.querySelectorAll('.carousel-button');
+        const leftButton = document.querySelector('.carousel-button.left');
+        const rightButton = document.querySelector('.carousel-button.right');
+        const products = document.querySelectorAll('.producto-card');
+
+        // Calcula el ancho de cada tarjeta más el espacio (gap)
+        const productWidth = products.length > 0 ? products[0].offsetWidth + 32 : 0; 
+        // Agrega la funcionalidad al botón de la derecha
+        rightButton.addEventListener('click', () => {
+            carouselTrack.scrollLeft += productWidth;
+        });
+
+        // Agrega la funcionalidad al botón de la izquierda
+        leftButton.addEventListener('click', () => {
+            carouselTrack.scrollLeft -= productWidth;
+        });
+
 
         // Estado del carrito
         const cart = {};
