@@ -67,6 +67,12 @@
             justify-content: space-between;
             align-items: center;
         }
+        .brand-link {
+            display: flex; 
+            align-items: center;
+            color: #6a994e; /* Color del texto del logo */
+            text-decoration: none;
+        }
 
         .brand-logo {
             display: flex;
@@ -665,8 +671,10 @@
     <header class="header">
         <div class="container">
             <div class="brand-logo">
-                <img src="img/icon/logo.png" alt="Logo de Bienestar Natural">
-                <h1 class="logo">Zamoragurt</h1>
+                <a href="#nosotros" class="brand-link"> 
+                    <img src="img/icon/logo.png" alt="Logo de Bienestar Natural">
+                    <h1 class="logo">Zamoragurt</h1>
+                </a>
             </div>
             <nav class="nav">
                 <ul>
