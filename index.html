@@ -55,7 +55,7 @@
             width: 100%;
             z-index: 100;
             box-shadow: var(--shadow-light);
-            transition: transform 0.3s ease-in-out; 
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease 
         }
 
         .header.hide {
@@ -222,7 +222,7 @@
         .section h2 {
             font-size: 2.5rem;
             margin-bottom: 2rem;
-            color: var(--primary-color);
+            color: #333;
         }
 
         .section p {
@@ -232,10 +232,34 @@
         }
 
         /* --- Sección de Nosotros --- */
-        #nosotros {
-            padding-top: 100px; 
-        }
-        
+        /* Ajustes visuales para la sección NOSOTROS */
+#nosotros {
+    padding-top: 100px; 
+    
+    /* CAMBIO CLAVE AQUÍ: RUTA A TU IMAGEN */
+    background-image: linear-gradient(rgba(227, 243, 215, 0.7), rgba(227, 243, 215, 0.7)), /* Capa de superposición para legibilidad */
+                      url('img/portada N.jpg'); /* 👈 ¡ASEGÚRATE QUE ESTA ES LA RUTA CORRECTA! */
+    
+    background-size: cover; 
+    background-position: center center; 
+    background-attachment: fixed; /* Efecto parallax */
+}
+
+/* El resto del CSS de #nosotros y #nosotros .container se mantiene igual */
+#nosotros h2,
+#nosotros p {
+    color: #333;
+    text-shadow: 1px 1px 2px rgba(183, 183, 183, 0.5); 
+    position: relative; 
+    z-index: 2;
+}
+
+#nosotros .container {
+    background-color: #6a994e; 
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
         .nosotros-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -255,6 +279,36 @@
             color: var(--primary-color);
             margin-bottom: 1rem;
         }
+
+       /* Sección de Nosotros - Estilos de las tarjetas (grid-item) */
+.grid-item {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 15px;
+    
+    /* Sombra Inicial Sutil */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    
+    text-align: left;
+    
+    /* Esencial: Transición para la animación suave (igual que el carrusel) */
+    transition: transform 0.3s ease; 
+}
+
+/* Efecto Hover: ¡Idéntico al carrusel! */
+.grid-item:hover {
+    /* ELEVACIÓN: Mueve la tarjeta 10px hacia arriba */
+    transform: translateY(-10px); 
+    
+    /* Opcional: Profundiza la sombra al elevarse */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2); 
+}
+
+/* Estilos internos para que el contenido se mantenga limpio */
+.grid-item h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
 
         /* --- Sección de Productos --- */
         #productos {
@@ -277,7 +331,12 @@
             scroll-snap-type: x mandatory;
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
+            scroll-behavior: smooth;   
+        &::-webkit-scrollbar {
+        display: none;
+        }
+        scrollbar-width: none;  
+        -ms-overflow-style: none;
         }
 
         /* Botones de navegación del carrusel */
@@ -321,7 +380,8 @@
             scroll-snap-align: center;
             display: flex; 
             flex-direction: column; 
-            height: 100%; /* Asegura que tomen la altura completa disponible */
+            height: 100%; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
         .producto-card:hover {
@@ -609,7 +669,7 @@
 
         /* --- Sección de Contacto --- */
         #contacto {
-            background-color: #e3f3d7;
+            background-color: #6d9f46;
         }
 
         .contact-form {
@@ -642,7 +702,7 @@
         }
 
         .contact-form button {
-            background-color: var(--primary-color);
+            background-color: #333;
             color: var(--light-text);
             padding: 12px 20px;
             border: none;
@@ -890,7 +950,7 @@
                     <label for="mensaje">Mensaje</label>
                     <textarea id="mensaje" name="mensaje" rows="6" required></textarea>
 
-                    <button type="submit">Enviar Mensaje (Abrir WhatsApp)</button>
+                    <button type="submit">Enviar Mensaje</button>
                 </form>
             </div>
         </section>
@@ -898,7 +958,8 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2023 Bienestar Natural. Todos los derechos reservados.</p>
+            <p>&copy; 2023 ZAMORAGURT. Todos los derechos reservados.</p>
+            <p>MMAH E.I.R.L RUC: 20606327642</p>
         </div>
     </footer>
 
